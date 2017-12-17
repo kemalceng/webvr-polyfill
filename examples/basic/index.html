@@ -92,8 +92,11 @@ effect.setSize(canvas.clientWidth, canvas.clientHeight, false);
 // Add a repeating grid as a skybox.
 var boxWidth = 5;
 var loader = new THREE.TextureLoader();
-loader.load('img/box.png', onTextureLoaded);
+loader.load('img/countdown.jpg', onTextureLoaded);
 
+loader.load('img/green-red.png', onPicLoaded);
+
+var cube;
 // Get the VRDisplay and save it for later.
 var vrDisplay = null;
 navigator.getVRDisplays().then(function(displays) {
@@ -105,6 +108,22 @@ navigator.getVRDisplays().then(function(displays) {
   }
 });
 
+function onPicLoaded(texture) {
+  // Create 3D objects.
+  var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+  var material = new THREE.MeshBasicMaterial({
+    map:texture
+  });
+  cube = new THREE.Mesh(geometry, material);
+
+  // Position cube mesh
+  cube.position.z = -1;
+
+  // Add cube mesh to your three.js scene
+  scene.add(cube);
+
+}
+
 function onTextureLoaded(texture) {
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
@@ -113,24 +132,12 @@ function onTextureLoaded(texture) {
   var geometry = new THREE.BoxGeometry(boxWidth, boxWidth, boxWidth);
   var material = new THREE.MeshBasicMaterial({
     map: texture,
-    color: 0x01BE00,
     side: THREE.BackSide
   });
 
   var skybox = new THREE.Mesh(geometry, material);
   scene.add(skybox);
 }
-
-// Create 3D objects.
-var geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-var material = new THREE.MeshNormalMaterial();
-var cube = new THREE.Mesh(geometry, material);
-
-// Position cube mesh
-cube.position.z = -1;
-
-// Add cube mesh to your three.js scene
-scene.add(cube);
 
 // Request animation frame loop function
 var lastRender = 0;
@@ -139,7 +146,7 @@ function animate(timestamp) {
   lastRender = timestamp;
 
   // Apply rotation to cube mesh
-  cube.rotation.y += delta * 0.0006;
+  //cube.rotation.y += delta * 0.0006;
 
   // Update VR headset position and apply to camera.
   controls.update();
