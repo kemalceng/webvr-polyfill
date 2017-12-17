@@ -23,7 +23,7 @@
   ],
   "license": "Apache-2.0",
   "scripts": {
-    "start": "npm run watch",
+    "start": "npm install && ./node_modules/webpack/bin/webpack.js -p --progress && node server.js",
     "watch": "webpack-dev-server",
     "build": "webpack",
     "test": "mocha"
