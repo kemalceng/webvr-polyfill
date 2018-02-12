@@ -66,6 +66,7 @@ document.addEventListener('touchmove', function(e) {
 <!-- A polyfill for the WebVR API.  -->
 <script src="../../build/webvr-polyfill.js"></script>
 
+<script src="imageSequence.js"></script>
 
 <script>
 var canvas = document.getElementById('webgl');
@@ -92,9 +93,9 @@ effect.setSize(canvas.clientWidth, canvas.clientHeight, false);
 // Add a repeating grid as a skybox.
 var boxWidth = 5;
 var loader = new THREE.TextureLoader();
-loader.load('img/countdown.jpg', onTextureLoaded);
 
-loader.load('img/green-red.png', onPicLoaded);
+loader.load('resources/images/countdown.jpg', onTextureLoaded);
+loader.load(imageSequence[0], onPicLoaded);
 
 var cube;
 // Get the VRDisplay and save it for later.
@@ -141,9 +142,23 @@ function onTextureLoaded(texture) {
 
 // Request animation frame loop function
 var lastRender = 0;
+var imageChangeCounter = 0;
+var next = 0;
+
 function animate(timestamp) {
-  var delta = Math.min(timestamp - lastRender, 500);
+  var delta = timestamp - lastRender;
   lastRender = timestamp;
+
+  imageChangeCounter += delta;
+
+  if(imageChangeCounter > 3000) {
+    imageChangeCounter = 0;
+    next = next + 1;
+    if(next >= imageSequence.length) {
+      next = 0;
+    }
+    loader.load(imageSequence[next], onPicLoaded);
+  }
 
   // Apply rotation to cube mesh
   //cube.rotation.y += delta * 0.0006;
